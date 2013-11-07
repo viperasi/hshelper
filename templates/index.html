@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>炉石助手数据库管理工具</title>
+	<title>炉石助手</title>
 	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
 
@@ -20,13 +20,10 @@
 		<!-- normal menu -->
 		<div class="span2 hidden-phone">
 			<ul class="nav nav-list">
-			    <li class="nav-header">炉石传说数据库</li>
-				<li><a href="/mgr">查看所有</a></li>
-				<li><a href="/mgr/hero">英雄</a></li>
-				<li><a href="/mgr/hskill">英雄技能</a></li>
-				<li><a href="/mgr/weapon">武器</a></li>
-				<li><a href="/mgr/skill">技能</a></li>
-				<li><a href="/mgr/ally">随从</a></li>
+			    <li class="nav-header">炉石助手</li>
+                <li><a href="/">首页</a></li>
+				<li><a href="/set">配卡</a></li>
+				<li><a href="/db">数据库</a></li>
 			</ul>
 		</div>
   		<div class="span10">
@@ -48,126 +45,23 @@
 			      <!-- Everything you want hidden at 940px or less, place within here -->
 			      <div class="nav-collapse collapse">
 			        <ul class="nav nav-list">
-				        <li><a href="/mgr">查看所有</a></li>
-                        <li><a href="/mgr/hero">英雄</a></li>
-                        <li><a href="/mgr/hskill">英雄技能</a></li>
-                        <li><a href="/mgr/weapon">武器</a></li>
-                        <li><a href="/mgr/skill">技能</a></li>
-                        <li><a href="/mgr/ally">随从</a></li>
+                        <li><a href="/">首页</a></li>
+				        <li><a href="/set">配卡</a></li>
+				        <li><a href="/db">数据库</a></li>
 					</ul>
 			      </div>
 			    </div>
 			  </div>
 			</div>
-			<table class="table table-striped">
-				<tr>
-					<th>名称</th>
-					<th>类型</th>
-					<th>职业</th>
-					<th>稀有度</th>
-					<th>牌组</th>
-					<th>操作</th>
-				</tr>
-				{% for card in cards %}
-				<tr>
-					<td><a href="#" class="cardmodal" id="{{card.id}}">{{ card.card_name }}</a></td>
-					<td>{{ card.card_type }}</td>
-					<td>{{ card.card_class }}</td>
-					<td>{{ card.card_rarity }}</td>
-					<td>{{ card.card_set }}</td>
-					<td><a href="#" class="editmodal" id="{{card.id}}">修改</a></td>
-				</tr>
-				{% endfor %}
-			</table>
-			<div class="pagination">
-			  <ul>
-			    <li><a href="/{{route}}/{{ page-1 }}">Prev</a></li>
-			    {% for i in range(allPage) %}
-			    <li><a href="/{{route}}/{{i+1}}">{{i+1}}</a></li>
-			    {% endfor %}
-			    <li><a href="/{{route}}/{{ page+1 }}">Next</a></li>
-			  </ul>
-			</div>
+			<p class="lead">
+                欢迎使用炉石助手，贴入链接或手动配卡
+			</p>
+            <div class="input-append">
+              <input class="input-xxlarge" type="text" placeholder="输入配卡链接">
+              <a href="#" class="btn btn-primary" >查看</a>
+            </div>
   		</div>
 	</div>
 </div>
-<!-- loading dialog -->
-<div id="loading" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="loadingLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="loadingLabel">Loading...</h3>
-  </div>
-  <div class="modal-body">
-    <p>loading...please wait...</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-  </div>
-</div>
-<!-- loading dialog end -->
-<!-- ship dialog -->
-<div id="cardModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="cardLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="cardLabel">cardLabel</h3>
-  </div>
-  <div class="modal-body">
-    <div class="row">
-        <div class="span3"><img src="#" class="img-polaroid" id="cardImg" /></div>
-        <div class="span2">
-            <dl>
-              <dt>名称</dt>
-              <dd id="cardName">name  desc</dd>
-              <dt>类型</dt>
-              <dd id="cardType">group name  desc</dd>
-              <dt>稀有度</dt>
-              <dd id="cardRarity">race  desc</dd>
-              <dt>卡组</dt>
-              <dd id="cardSet">race  desc</dd>
-              <dt>职业</dt>
-              <dd id="cardClass">race  desc</dd>
-              <dt>种族</dt>
-              <dd id="cardRace">race  desc</dd>
-              <dt>技能</dt>
-              <dd id="cardDesc">race  desc</dd>
-              <dt>描述</dt>
-              <dd id="cardRemark">race  desc</dd>
-            </dl>
-        </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
-  </div>
-</div>
-<!-- ship dialog end -->
-<script type="text/javascript">
-$(function(){
-	$(".cardmodal").click(function(){
-	    $("#loading").modal();
-		var $this = $(this);
-		$.ajax({
-			url:'/card/' + $this.attr("id"),
-			dataType:'json',
-			type:'GET',
-			success:function(resp){
-				console.log(resp.card_remark);
-				$("#cardLabel").empty().append(resp.card_name);
-				$("#cardName").empty().append(resp.card_name);
-				$("#cardImg").attr("src", resp.card_img);
-				$("#cardType").empty().append(resp.card_type);
-				$("#cardRarity").empty().append(resp.card_rarity);
-				$("#cardSet").empty().append(resp.card_set);
-				$("#cardClass").empty().append(resp.card_class);
-				$("#cardRace").empty().append(resp.card_race);
-				$("#cardDesc").empty().append(resp.card_desc)
-				$("#cardRemark").empty().append(resp.card_remark);
-                $("#cardModal").modal();
-                $("#loading").modal("hide");
-			}
-		});
-	});
-});
-</script>
 </body>
 </html>

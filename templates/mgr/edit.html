@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>炉石助手数据库管理工具</title>
+	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
+
+	<script src="http://cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	<style type="text/css">
+	.fqclass{
+		margin-top: -40px;
+	}
+	</style>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<!-- normal menu -->
+		<div class="span2 hidden-phone">
+			<ul class="nav nav-list">
+			    <li class="nav-header">炉石传说数据库</li>
+				<li><a href="/mgr">查看所有</a></li>
+				<li><a href="/mgr/hero">英雄</a></li>
+				<li><a href="/mgr/hskill">英雄技能</a></li>
+				<li><a href="/mgr/weapon">武器</a></li>
+				<li><a href="/mgr/skill">技能</a></li>
+				<li><a href="/mgr/ally">随从</a></li>
+			</ul>
+		</div>
+  		<div class="span10">
+  			<!-- phone menu -->
+  			<div class="navbar visible-phone">
+			  <div class="navbar-inner">
+			    <div class="container">
+
+			      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+			      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </a>
+
+			      <!-- Be sure to leave the brand out there if you want it shown -->
+			      <a class="brand" href="#">炉石传说数据库</a>
+
+			      <!-- Everything you want hidden at 940px or less, place within here -->
+			      <div class="nav-collapse collapse">
+			        <ul class="nav nav-list">
+				        <li><a href="/mgr">查看所有</a></li>
+                        <li><a href="/mgr/hero">英雄</a></li>
+                        <li><a href="/mgr/hskill">英雄技能</a></li>
+                        <li><a href="/mgr/weapon">武器</a></li>
+                        <li><a href="/mgr/skill">技能</a></li>
+                        <li><a href="/mgr/ally">随从</a></li>
+					</ul>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<form action="/mgr/save/{{card.id}}" method="POST">
+                <legend>{{ card.card_name }}
+                    <p>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn" onclick="javascript:history.go(-1);">返回</button>
+                    </p>
+                </legend>
+                <div class="span3">
+                    <label>中文名称</label>
+                    <input type="text" name="name" placeholder="中文名称" value="{{card.card_name}}">
+                    <label>稀有度</label>
+                    <input type="text" name="rarity" placeholder="稀有度" value="{{card.card_rarity}}">
+                    <label>种族</label>
+                    <input type="text" name="race" placeholder="种族" value="{{card.card_race}}">
+                    <label>合成费用</label>
+                    <input type="text" name="crafting" placeholder="合成费用" value="{{card.card_crafting}}">
+                    <label>花费</label>
+                    <input type="text" name="cost" placeholder="花费" value="{{card.card_cost}}">
+                    <label>图片</label>
+                    <input type="text" name="img" placeholder="图片" value="{{card.card_img}}"><button id="imgpreview" class="btn btn-primary" type="button">预览</button>
+                    <label>描述</label>
+                    <textarea name="remark" rows="3">{{card.card_remark}}</textarea>
+                </div>
+                <div class="span3">
+                    <label>英文名称</label>
+                    <input type="text" name="engname" placeholder="英文名称" value="{{card.card_engname}}">
+                    <label>职业</label>
+                    <input type="text" name="class" placeholder="职业" value="{{card.card_class}}">
+                    <label>阵营</label>
+                    <input type="text" name="faction" placeholder="阵营" value="{{card.card_faction}}">
+                    <label>分解费用</label>
+                    <input type="text" name="gained" placeholder="分解费用" value="{{card.card_gained}}">
+                    <label>攻击</label>
+                    <input type="text" name="att" placeholder="攻击" value="{{card.card_att}}">
+                    <label>英文图片</label>
+                    <input type="text" name="engimg" placeholder="英文图片" value="{{card.card_engimg}}"><button id="engimgpreview" class="btn btn-primary" type="button">预览</button>
+                    <label>英文技能描述</label>
+                    <textarea name="engdesc" rows="3">{{card.card_engdesc}}</textarea>
+                </div>
+                <div class="span3">
+                    <label>类型</label>
+                    <input type="text" name="type" placeholder="类型" value="{{card.card_type}}">
+                    <label>牌组</label>
+                    <input type="text" name="set" placeholder="牌组" value="{{card.card_set}}">
+                    <label>是否可收集</label>
+                    <input type="text" name="collectible" placeholder="可收集" value="{{card.card_collectible}}">
+                    <label>画师</label>
+                    <input type="text" name="artist" placeholder="画师" value="{{card.card_artist}}">
+                    <label>生命</label>
+                    <input type="text" name="hp" placeholder="生命" value="{{card.card_hp}}">
+                    <label>技能描述</label>
+                    <textarea name="desc" rows="3">{{card.card_desc}}</textarea>
+                    <label>英文描述</label>
+                    <textarea name="engremark" rows="3">{{card.card_engremark}}</textarea>
+                </div>
+            </form>
+  		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $("#imgpreview").popover({
+        html:true,
+        content:"<img src='"+$("input[name='img']").val()+"' />"
+    });
+
+    $("#engimgpreview").popover({
+        html:true,
+        content:"<img src='"+$("input[name='engimg']").val()+"' />"
+    });
+});
+</script>
+</body>
+</html>
