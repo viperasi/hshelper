@@ -22,7 +22,17 @@
 			<ul class="nav nav-list">
 			    <li class="nav-header">炉石助手</li>
                 <li><a href="/">首页</a></li>
-				<li><a href="/set">配卡</a></li>
+				<li class="nav-header">卡牌构筑</li>
+                <li><a href="/set/圣骑士">圣骑士</a></li>
+                <li><a href="/set/德鲁伊">德鲁伊</a></li>
+                <li><a href="/set/战士">战士</a></li>
+                <li><a href="/set/术士">术士</a></li>
+                <li><a href="/set/法师">法师</a></li>
+                <li><a href="/set/潜行者">潜行者</a></li>
+                <li><a href="/set/牧师">牧师</a></li>
+                <li><a href="/set/猎人">猎人</a></li>
+                <li><a href="/set/萨满">萨满</a></li>
+                <li class="nav-header">数据库</li>
 				<li><a href="/db">数据库</a></li>
 			</ul>
 		</div>
@@ -40,26 +50,101 @@
 			      </a>
 
 			      <!-- Be sure to leave the brand out there if you want it shown -->
-			      <a class="brand" href="#">炉石传说数据库</a>
+			      <a class="brand" href="/">炉石传说数据库</a>
 
 			      <!-- Everything you want hidden at 940px or less, place within here -->
 			      <div class="nav-collapse collapse">
 			        <ul class="nav nav-list">
                         <li><a href="/">首页</a></li>
-				        <li><a href="/set">配卡</a></li>
+				        <li class="nav-header">卡牌构筑</li>
+                        <li><a href="/set/圣骑士">圣骑士</a></li>
+                        <li><a href="/set/德鲁伊">德鲁伊</a></li>
+                        <li><a href="/set/战士">战士</a></li>
+                        <li><a href="/set/术士">术士</a></li>
+                        <li><a href="/set/法师">法师</a></li>
+                        <li><a href="/set/潜行者">潜行者</a></li>
+                        <li><a href="/set/牧师">牧师</a></li>
+                        <li><a href="/set/猎人">猎人</a></li>
+                        <li><a href="/set/萨满">萨满</a></li>
+                        <li class="nav-header">数据库</li>
 				        <li><a href="/db">数据库</a></li>
 					</ul>
 			      </div>
 			    </div>
 			  </div>
 			</div>
-          {% for hero in heros %}
-            <a href="/setstart/{{hero.id}}" class="span3">
-              <img src="{{hero.card_engimg}}" alt="{{ hero.card_name }}" width="230" title="{{ hero.card_name }}">
-            </a>
-          {% endfor %}
+            <div class="span8">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#class" data-toggle="tab">{{herostr}}</a></li>
+                  <li><a href="#ally" data-toggle="tab">随从</a></li>
+                  <li>
+                      <a href="#" onclick="share();">分享</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="class">
+                        {% for classcard in classcards %}
+                          <a href="#" class="card" data-id="{{ classcard.id }}">{{ classcard.card_name }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane" id="ally">
+                        {% for allycard in allycards %}
+                          <a href="#" class="card" data-id="{{ allycard.id }}">{{ allycard.card_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="span3">
+                <p>
+                    <a href="#"><h4>查看牌库情况分布<span id="allcount" class="badge badge-warning pul-right">0</span></h4></a>
+                </p>
+                <div id="cardlist"></div>
+            </div>
   		</div>
 	</div>
 </div>
+<div id="sharemodal" class="modal hide fade">
+  <div class="modal-body">
+    <p><input id="sharelink" /></p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+  </div>
+</div>
+<script>
+  $(function () {
+    $(".card").click(function(){
+        var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
+        var allcount = $("#allcount").text();
+        if(allcount==30){
+            return;
+        }else{
+            if(el.length>0){
+                var count = $(el[0]).find("span").text();
+                if(count<2){
+                    $(el[0]).find("span").text(2);
+                    $("#allcount").text(parseInt(allcount) + 1);
+                }
+            }else{
+                $("#cardlist").append(
+                    "<pre id='"+$(this).data('id')+"'>"+$(this).text()+"<span class='badge badge-warning pull-right'>1</span></pre>"
+                );
+                $("#allcount").text(parseInt(allcount) + 1);
+            }
+        }
+    });
+  });
+
+  function share(){
+    var pres = $("#cardlist").find("pre");
+    var param = "";
+    pres.each(function(index,item){
+        param = param + $(item).attr("id") + ":" + $(item).find("span").text() + ";";
+    });
+    $("#sharelink").val(param);
+    $("#sharemodal").modal("show");
+    console.log(param);
+  }
+</script>
 </body>
 </html>

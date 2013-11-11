@@ -124,19 +124,40 @@ def mgrSave(id=None):
 def index():
     return render_template('index.html')
 
-@app.route('/set')
-def set():
-    heros = Card.query.filter(Card.card_type == u'英雄', Card.card_set == u'基础')
-    return render_template('set.html', heros=heros)
+@app.route('/set/<string:str>')
+def set(str=None):
+    herostr = None
+    cardsstr = None
+    if str is not None:
+        strArr = str.split('&')
+        herostr = strArr[0]
+        if len(strArr) > 1:
+            cardsstr = strArr[1]
+        classcards = None
+        allycards = None
+        cards = None
+        if herostr is not None:
+            classcards = Card.query.filter(Card.card_class == herostr, Card.card_type != u'英雄', Card.card_type != u'英雄技能')
+            allycards = Card.query.filter(Card.card_type == u'随从')
+        if cardsstr is not None:
+            cardsNumArr = cardsstr.split(';')
+            cardIds = ''
+            for cardNumStr in cardsNumArr:
+                if cardNumStr is not None and cardNumStr == '':
+                    cardIds = cardIds + cardNumStr.split(':')[0] + ','
+            cards = Card.query.filter('id in (:ids)').params(ids=cardIds).all()
+            cs = ''
+            for c in cards:
+                for cardNumStr in cardsNumArr:
+                    cns = cardNumStr.split(':')
+                    if c.id == cns[0]:
+                        cs = cs + 'id:' + c.card_name + ':' + cns[1] + ';'
+                    else:
+                        continue
+            print(cs)
+        return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards)
+    return redirect(url_for('index'))
 
-@app.route('/setstart/<int:id>')
-def setStart(id=None):
-    if id is not None:
-        card = Card.query.filter(Card.id == id).first()
-        classcards = Card.query.filter(Card.card_class == card.card_class, Card.card_type != u'英雄', Card.card_type != u'英雄技能')
-        allycards = Card.query.filter(Card.card_type == u'随从')
-        return render_template('setStart.html', card=card, classcards=classcards, allycards=allycards)
-    return redirect(url_for('set'))
 
 #index end
 
