@@ -124,38 +124,39 @@ def mgrSave(id=None):
 def index():
     return render_template('index.html')
 
-@app.route('/set/<string:str>')
-def set(str=None):
+@app.route('/set/<string:cardstr>')
+def set(cardstr=None):
     herostr = None
     cardsstr = None
-    if str is not None:
-        strArr = str.split('&')
+    if cardstr is not None:
+        strArr = cardstr.split('&')
         herostr = strArr[0]
+        print(herostr)
         if len(strArr) > 1:
             cardsstr = strArr[1]
         classcards = None
         allycards = None
         cards = None
+        cs = ''
         if herostr is not None:
             classcards = Card.query.filter(Card.card_class == herostr, Card.card_type != u'英雄', Card.card_type != u'英雄技能')
             allycards = Card.query.filter(Card.card_type == u'随从')
         if cardsstr is not None:
             cardsNumArr = cardsstr.split(';')
-            cardIds = ''
+            cardIds = []
             for cardNumStr in cardsNumArr:
-                if cardNumStr is not None and cardNumStr == '':
-                    cardIds = cardIds + cardNumStr.split(':')[0] + ','
-            cards = Card.query.filter('id in (:ids)').params(ids=cardIds).all()
-            cs = ''
+                if cardNumStr is not None and cardNumStr != '':
+                    cardIds.append(cardNumStr.split(':')[0])
+            cards = Card.query.filter(Card.id.in_(cardIds)).all()
             for c in cards:
                 for cardNumStr in cardsNumArr:
                     cns = cardNumStr.split(':')
-                    if c.id == cns[0]:
-                        cs = cs + 'id:' + c.card_name + ':' + cns[1] + ';'
+                    if cns[0] is not None and cns[0] != '' and c.id == int(cns[0]):
+                        cs = cs + str(c.id) + ':' + c.card_name + ':' + cns[1] + ';'
                     else:
                         continue
             print(cs)
-        return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards)
+        return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards, cs=cs)
     return redirect(url_for('index'))
 
 

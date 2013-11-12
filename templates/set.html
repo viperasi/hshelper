@@ -105,7 +105,7 @@
 </div>
 <div id="sharemodal" class="modal hide fade">
   <div class="modal-body">
-    <p><input id="sharelink" /></p>
+    <p><input id="sharelink" readonly="readonly" class="input-xxlarge"/></p>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
@@ -113,6 +113,9 @@
 </div>
 <script>
   $(function () {
+
+    initCards('{{cs}}');
+
     $(".card").click(function(){
         var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
         var allcount = $("#allcount").text();
@@ -133,17 +136,43 @@
             }
         }
     });
+
+    $('#sharelink').click(function(){
+        $('#sharelink').select();
+    });
   });
 
   function share(){
+    var host = location.href;
+    console.log(host);
     var pres = $("#cardlist").find("pre");
     var param = "";
     pres.each(function(index,item){
         param = param + $(item).attr("id") + ":" + $(item).find("span").text() + ";";
     });
-    $("#sharelink").val(param);
+    if(host.indexOf('&')!=-1)
+        host = host.substr(0, host.indexOf('&'));
+    if(host.indexOf('#')==host.length-1)
+        host = host.substr(0,host.length-1);
+    $("#sharelink").val(host + '&' + param);
     $("#sharemodal").modal("show");
-    console.log(param);
+  }
+
+  function initCards(cs){
+    if(cs && cs!=''){
+        var css = cs.split(';');
+        var allcount = 0;
+        $.each(css,function(index,item){
+            var csss = item.split(':');
+            if(csss[0]){
+                $("#cardlist").append(
+                    "<pre id='"+csss[0]+"'>"+csss[1]+"<span class='badge badge-warning pull-right'>"+csss[2]+"</span></pre>"
+                );
+                allcount = allcount + parseInt(csss[2]);
+            }
+        });
+        $("#allcount").text(allcount);
+    }
   }
 </script>
 </body>
