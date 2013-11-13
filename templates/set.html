@@ -5,9 +5,11 @@
 	<title>炉石助手</title>
 	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='opentip.css')}}">
 
 	<script src="http://cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='opentip-jquery.min.js')}}"></script>
 	<style type="text/css">
 	.fqclass{
 		margin-top: -40px;
@@ -84,12 +86,16 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="class">
                         {% for classcard in classcards %}
-                          <a href="#" class="card" data-id="{{ classcard.id }}">{{ classcard.card_name }}</a>
+                        <a href="#" style="display:inline-block;" data-id="{{classcard.id}}" data-name="{{classcard.card_name}}" data-img="{{classcard.card_img}}" class="card">
+                            <pre style="width:180px;">{{classcard.card_name}}<span class='badge badge-info pull-right' id="count_{{classcard.id}}"></span></pre>
+                        </a>
                         {% endfor %}
                     </div>
                     <div class="tab-pane" id="ally">
                         {% for allycard in allycards %}
-                          <a href="#" class="card" data-id="{{ allycard.id }}">{{ allycard.card_name }}</a>
+                          <a href="#" style="display:inline-block;" data-id="{{allycard.id}}" data-name="{{allycard.card_name}}" data-img="{{allycard.card_img}}" class="card">
+                            <pre style="width:180px;">{{allycard.card_name}}<span class='badge badge-info pull-right' id="count_{{allycard.id}}"></span></pre>
+                          </a>
                         {% endfor %}
                     </div>
                 </div>
@@ -113,10 +119,35 @@
 </div>
 <script>
   $(function () {
-
+    $(document).bind('contextmenu', function(e){ return false; });
     initCards('{{cs}}');
 
-    $(".card").click(function(){
+    $(".card").each(function(){
+        $(this).opentip("<img src='"+$(this).data('img')+"'/>", {style:'glass'});
+    });
+
+    $(".card").mousedown(function(e){
+        if(e.which==3){
+            var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
+            var allcount = $("#allcount").text();
+            if(allcount==0){
+                return;
+            }else{
+                if(el.length>0){
+                    var count = $(el[0]).find("span").text();
+                    if(count>1){
+                        $(el[0]).find("span").text(1);
+                        $("#allcount").text(parseInt(allcount) - 1);
+                        $("#count_"+$(this).data('id')).text(1);
+                    }else{
+                        $("#allcount").text(parseInt(allcount) - 1);
+                        $(el[0]).remove();
+                        $("#count_"+$(this).data('id')).text('');
+                    }
+                }
+            }
+            return;
+        }
         var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
         var allcount = $("#allcount").text();
         if(allcount==30){
@@ -127,11 +158,15 @@
                 if(count<2){
                     $(el[0]).find("span").text(2);
                     $("#allcount").text(parseInt(allcount) + 1);
+                    $("#count_"+$(this).data('id')).text(2);
                 }
             }else{
+                var $pre = $("<pre class='cl' data-img='"+$(this).data('img')+"' id='"+$(this).data('id')+"'>"+$(this).data('name')+"<span class='badge badge-warning pull-right'>1</span></pre>");
+                $pre.opentip("<img src='"+$(this).data('img')+"'/>", {style:'glass'});
                 $("#cardlist").append(
-                    "<pre id='"+$(this).data('id')+"'>"+$(this).text()+"<span class='badge badge-warning pull-right'>1</span></pre>"
+                    $pre
                 );
+                $("#count_"+$(this).data('id')).text(1);
                 $("#allcount").text(parseInt(allcount) + 1);
             }
         }
@@ -168,6 +203,7 @@
                 $("#cardlist").append(
                     "<pre id='"+csss[0]+"'>"+csss[1]+"<span class='badge badge-warning pull-right'>"+csss[2]+"</span></pre>"
                 );
+                $("#count_"+csss[0]).text(csss[2]);
                 allcount = allcount + parseInt(csss[2]);
             }
         });

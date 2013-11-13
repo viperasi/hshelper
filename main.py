@@ -171,16 +171,16 @@ def card(id=None):
 
 def getCards(page=1, type=None):
     result = {
-        'cards' : None,
-        'allPage' : 0,
-        'page' : page
+        'cards': None,
+        'allPage': 0,
+        'page': page
     }
     count = 0
     if type is None:
         count = db_session.query(func.count(Card.id)).first()[0]
     else:
         count = db_session.query(func.count(Card.id)).filter(Card.card_type == type).first()[0]
-    curr = (page -1)  * PER_PAGE
+    curr = (page - 1) * PER_PAGE
     allPage = 1
     if count % PER_PAGE == 0 :
         allPage = count / PER_PAGE
