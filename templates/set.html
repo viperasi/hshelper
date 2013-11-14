@@ -35,7 +35,12 @@
                 <li><a href="/set/猎人">猎人</a></li>
                 <li><a href="/set/萨满">萨满</a></li>
                 <li class="nav-header">数据库</li>
-				<li><a href="/db">数据库</a></li>
+                <li><a href="/db">查看所有</a></li>
+                <li><a href="/db/hero">英雄</a></li>
+                <li><a href="/db/hskill">英雄技能</a></li>
+                <li><a href="/db/weapon">武器</a></li>
+                <li><a href="/db/skill">技能</a></li>
+                <li><a href="/db/ally">随从</a></li>
 			</ul>
 		</div>
   		<div class="span10">
@@ -69,13 +74,22 @@
                         <li><a href="/set/猎人">猎人</a></li>
                         <li><a href="/set/萨满">萨满</a></li>
                         <li class="nav-header">数据库</li>
-				        <li><a href="/db">数据库</a></li>
+                        <li><a href="/db">查看所有</a></li>
+                        <li><a href="/db/hero">英雄</a></li>
+                        <li><a href="/db/hskill">英雄技能</a></li>
+                        <li><a href="/db/weapon">武器</a></li>
+                        <li><a href="/db/skill">技能</a></li>
+                        <li><a href="/db/ally">随从</a></li>
 					</ul>
 			      </div>
 			    </div>
 			  </div>
 			</div>
             <div class="span8">
+                <div class="alert alert-error hide">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>错误!</strong> 请添加够30张卡牌再分享。
+                </div>
                 <ul class="nav nav-tabs">
                   <li class="active"><a href="#class" data-toggle="tab">{{herostr}}</a></li>
                   <li><a href="#ally" data-toggle="tab">随从</a></li>
@@ -128,27 +142,40 @@
 
     $(".card").mousedown(function(e){
         if(e.which==3){
-            var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
-            var allcount = $("#allcount").text();
-            if(allcount==0){
-                return;
-            }else{
-                if(el.length>0){
-                    var count = $(el[0]).find("span").text();
-                    if(count>1){
-                        $(el[0]).find("span").text(1);
-                        $("#allcount").text(parseInt(allcount) - 1);
-                        $("#count_"+$(this).data('id')).text(1);
-                    }else{
-                        $("#allcount").text(parseInt(allcount) - 1);
-                        $(el[0]).remove();
-                        $("#count_"+$(this).data('id')).text('');
-                    }
+            minusCard($(this).data('id'));
+        }else{
+            addCard($(this).data('id'), $(this).data('img'), $(this).data('name'));
+        }
+    });
+
+    $('#sharelink').click(function(){
+        $('#sharelink').select();
+    });
+  });
+
+  function minusCard(id){
+        var el = $("#cardlist").find("pre[id='"+id+"']");
+        var allcount = $("#allcount").text();
+        if(allcount==0){
+            return;
+        }else{
+            if(el.length>0){
+                var count = $(el[0]).find("span").text();
+                if(count>1){
+                    $(el[0]).find("span").text(1);
+                    $("#allcount").text(parseInt(allcount) - 1);
+                    $("#count_"+id).text(1);
+                }else{
+                    $("#allcount").text(parseInt(allcount) - 1);
+                    $(el[0]).remove();
+                    $("#count_"+id).text('');
                 }
             }
-            return;
         }
-        var el = $("#cardlist").find("pre[id='"+$(this).data('id')+"']");
+  }
+
+  function addCard(id, img, name){
+        var el = $("#cardlist").find("pre[id='"+id+"']");
         var allcount = $("#allcount").text();
         if(allcount==30){
             return;
@@ -158,28 +185,28 @@
                 if(count<2){
                     $(el[0]).find("span").text(2);
                     $("#allcount").text(parseInt(allcount) + 1);
-                    $("#count_"+$(this).data('id')).text(2);
+                    $("#count_"+id).text(2);
                 }
             }else{
-                var $pre = $("<pre class='cl' data-img='"+$(this).data('img')+"' id='"+$(this).data('id')+"'>"+$(this).data('name')+"<span class='badge badge-warning pull-right'>1</span></pre>");
-                $pre.opentip("<img src='"+$(this).data('img')+"'/>", {style:'glass'});
+                var $pre = $("<pre class='cl' data-img='"+img+"' id='"+id+"'>"+name+"<span class='badge badge-warning pull-right'>1</span></pre>");
+                $pre.click(function(){
+                    minusCard(id);
+                });
                 $("#cardlist").append(
                     $pre
                 );
-                $("#count_"+$(this).data('id')).text(1);
+                $("#count_"+id).text(1);
                 $("#allcount").text(parseInt(allcount) + 1);
             }
         }
-    });
-
-    $('#sharelink').click(function(){
-        $('#sharelink').select();
-    });
-  });
+  }
 
   function share(){
+    if(parseInt($("#allcount").text()) < 30){
+        $(".alert").show();
+        return;
+    }
     var host = location.href;
-    console.log(host);
     var pres = $("#cardlist").find("pre");
     var param = "";
     pres.each(function(index,item){
@@ -200,8 +227,12 @@
         $.each(css,function(index,item){
             var csss = item.split(':');
             if(csss[0]){
+                var $pre = $("<pre id='"+csss[0]+"'>"+csss[1]+"<span class='badge badge-warning pull-right'>"+csss[2]+"</span></pre>");
+                $pre.click(function(){
+                    minusCard(csss[0]);
+                });
                 $("#cardlist").append(
-                    "<pre id='"+csss[0]+"'>"+csss[1]+"<span class='badge badge-warning pull-right'>"+csss[2]+"</span></pre>"
+                    $pre
                 );
                 $("#count_"+csss[0]).text(csss[2]);
                 allcount = allcount + parseInt(csss[2]);

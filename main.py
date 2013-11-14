@@ -155,11 +155,52 @@ def set(cardstr=None):
                         cs = cs + str(c.id) + ':' + c.card_name + ':' + cns[1] + ';'
                     else:
                         continue
-            print(cs)
         return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards, cs=cs)
     return redirect(url_for('index'))
 
+@app.route('/db')
+@app.route('/db/index')
+@app.route('/db/<int:page>')
+@app.route('/db/index/<int:page>')
+def db(page=1):
+    route = 'index'
+    result = getCards(page, None)
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 
+@app.route('/db/hero')
+@app.route('/db/hero/<int:page>')
+def dbHero(page=1):
+    route = 'hero'
+    result = getCards(page, u'英雄')
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
+
+@app.route('/db/hskill')
+@app.route('/db/hskill/<int:page>')
+def dbHeroSkill(page=1):
+    route = 'hskill'
+    result = getCards(page, u'英雄技能')
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
+
+@app.route('/db/weapon')
+@app.route('/db/weapon/<int:page>')
+def dbWeapon(page=1):
+    route = 'weapon'
+    result = getCards(page, u'武器')
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
+
+@app.route('/db/skill')
+@app.route('/db/skill/<int:page>')
+def dbSkill(page=1):
+    route = 'skill'
+    result = getCards(page, u'技能')
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
+
+@app.route('/db/ally')
+@app.route('/db/ally/<int:page>')
+def dbAlly(page=1):
+    route = 'ally'
+    result = getCards(page, u'随从')
+    return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 #index end
 
 @app.route('/card/<int:id>')

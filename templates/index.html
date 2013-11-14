@@ -22,8 +22,8 @@
 			<ul class="nav nav-list">
 			    <li class="nav-header">炉石助手</li>
                 <li><a href="/">首页</a></li>
-                <li class="nav-header">卡牌构筑</li>
-				<li><a href="/set/圣骑士">圣骑士</a></li>
+				<li class="nav-header">卡牌构筑</li>
+                <li><a href="/set/圣骑士">圣骑士</a></li>
                 <li><a href="/set/德鲁伊">德鲁伊</a></li>
                 <li><a href="/set/战士">战士</a></li>
                 <li><a href="/set/术士">术士</a></li>
@@ -33,7 +33,12 @@
                 <li><a href="/set/猎人">猎人</a></li>
                 <li><a href="/set/萨满">萨满</a></li>
                 <li class="nav-header">数据库</li>
-				<li><a href="/db">数据库</a></li>
+                <li><a href="/db">查看所有</a></li>
+                <li><a href="/db/hero">英雄</a></li>
+                <li><a href="/db/hskill">英雄技能</a></li>
+                <li><a href="/db/weapon">武器</a></li>
+                <li><a href="/db/skill">技能</a></li>
+                <li><a href="/db/ally">随从</a></li>
 			</ul>
 		</div>
   		<div class="span10">
@@ -67,7 +72,12 @@
                         <li><a href="/set/猎人">猎人</a></li>
                         <li><a href="/set/萨满">萨满</a></li>
                         <li class="nav-header">数据库</li>
-				        <li><a href="/db">数据库</a></li>
+                        <li><a href="/db">查看所有</a></li>
+                        <li><a href="/db/hero">英雄</a></li>
+                        <li><a href="/db/hskill">英雄技能</a></li>
+                        <li><a href="/db/weapon">武器</a></li>
+                        <li><a href="/db/skill">技能</a></li>
+                        <li><a href="/db/ally">随从</a></li>
 					</ul>
 			      </div>
 			    </div>
@@ -77,11 +87,26 @@
                 欢迎使用炉石助手，贴入链接或手动配卡
 			</p>
             <div class="input-append">
-              <input class="input-xxlarge" type="text" placeholder="输入配卡链接">
-              <a href="#" class="btn btn-primary" >查看</a>
+              <input id="setinput" class="input-xxlarge" type="text" placeholder="输入完整配卡链接">
+              <a href="#" id="setbtn" class="btn btn-primary" >查看</a>
             </div>
   		</div>
 	</div>
 </div>
+<script>
+    $(function(){
+        $("#setbtn").click(function(){
+            var url = $("#setinput").val();
+            var host = location.href;
+            if(host.indexOf("#")==host.length-1){
+                host = host.substring(0, host.length-1);
+            }
+            console.log(host);
+            if(url.indexOf(host) == 0){
+                location.href = url;
+            }
+        });
+    });
+</script>
 </body>
 </html>
