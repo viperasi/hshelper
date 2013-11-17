@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import Column, Integer, Text, DateTime
 from db import Base
+from datetime import datetime
 
 class Card(Base):
     __tablename__ = 'cards'
@@ -27,6 +28,8 @@ class Card(Base):
     card_engdesc = Column(Text)
     card_remark = Column(Text)
     card_engremark = Column(Text)
+    card_maxnum = Column(Integer)
+    card_num = Column(Integer)
 
     def __init__(self, card_name=None,card_type=None,card_class=None,card_rarity=None,card_set=None,card_race=None,card_faction=None,card_crafting=None,card_gained=None,card_artist=None,card_collectible=None,card_elite=None,card_cost=None,card_att=None,card_hp=None,card_img=None,card_desc=None,card_remark=None):
         self.card_name = card_name
@@ -47,3 +50,19 @@ class Card(Base):
         self.card_img = card_img
         self.card_desc = card_desc
         self.card_remark = card_remark
+
+class Share(Base):
+    __tablename__ = 'shares'
+    id = Column(Integer, primary_key=True)
+    share_shorturl = Column(Text)
+    share_qiniuurl = Column(Text)
+    share_createtime = Column(DateTime)
+    share_enabled = Column(Integer)
+    share_deleted = Column(Text)
+
+    def __init__(self, share_shorturl=None, share_qiniuurl=None):
+        self.share_shorturl = share_shorturl
+        self.share_qiniuurl = share_qiniuurl
+        self.share_deleted = 0
+        self.share_enabled = 1
+        self.share_createtime = datetime.now()

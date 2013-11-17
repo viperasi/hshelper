@@ -2,12 +2,16 @@
 from flask import Flask, session, render_template, request, redirect, url_for, abort
 from db import db_session
 from models import Card
+from picutil import saveImage
 from sqlalchemy import func
 import simplejson
+
 
 app = Flask(__name__)
 
 PER_PAGE = 10
+
+QINIU_HOST = 'http://hshelper.u.qiniudn.com/'
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -157,6 +161,30 @@ def set(cardstr=None):
                         continue
         return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards, cs=cs)
     return redirect(url_for('index'))
+
+@app.route('/share/<string:cls>', methods=['POST'])
+def share(cls=None):
+    return QINIU_HOST + 'FpjWFB07cmjwUBiPNUibjvMiwZIH'
+    if cls is not None:
+        hero = Card.query.filter(Card.card_class == cls, Card.card_type == u'英雄', Card.card_rarity == u'免费', Card.card_set == u'基础').first()
+        if request.form['cardsstr'] is not None:
+            cardsstr = request.form['cardsstr']
+            cardsNumArr = cardsstr.split(';')
+            cardIds = []
+            for cardNumStr in cardsNumArr:
+                if cardNumStr is not None and cardNumStr != '':
+                    cardIds.append(cardNumStr.split(':')[0])
+            cards = Card.query.filter(Card.id.in_(cardIds)).all()
+            for c in cards:
+                for cardNumStr in cardsNumArr:
+                    cns = cardNumStr.split(':')
+                    if cns[0] is not None and cns[0] != '' and c.id == int(cns[0]):
+                        c.card_num = cns[1]
+                    else:
+                        continue
+            share = saveImage(hero, cards)
+            return QINIU_HOST + share.share_qiniuurl
+    abort(404)
 
 @app.route('/db')
 @app.route('/db/index')

@@ -125,7 +125,23 @@
 </div>
 <div id="sharemodal" class="modal hide fade">
   <div class="modal-body">
-    <p><input id="sharelink" readonly="readonly" class="input-xxlarge"/></p>
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#share_link" data-toggle="tab">链接</a></li>
+      <li><a href="#share_img" data-toggle="tab">图片</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="share_link">
+          <p><input id="sharelink" readonly="readonly" class="input-xxlarge"/></p>
+      </div>
+      <div class="tab-pane" id="share_img">
+          <div class="progress progress-striped active" id="share_img_loading">
+              <div class="bar" style="width: 100%;">正在生成图片，请稍等片刻...</div>
+            </div>
+          <div style="display:none;" id="share_img_img">
+              <a href="" target="_blank"><img src="" class="img-polaroid" style="width:140px;height:210px;"></a>
+          </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
@@ -150,6 +166,10 @@
 
     $('#sharelink').click(function(){
         $('#sharelink').select();
+    });
+
+    $('a[href="#share_img"]').on('shown', function (e) {
+        shareImg();
     });
   });
 
@@ -218,6 +238,43 @@
         host = host.substr(0,host.length-1);
     $("#sharelink").val(host + '&' + param);
     $("#sharemodal").modal("show");
+  }
+
+  function shareImg(){
+    if(parseInt($("#allcount").text()) < 30){
+        $(".alert").show();
+        return;
+    }
+    if($("#share_img_loading").is(":hidden")){
+        $("#share_img_loading").show();
+    }
+    var pres = $("#cardlist").find("pre");
+    var param = "";
+    pres.each(function(index,item){
+        param = param + $(item).attr("id") + ":" + $(item).find("span").text() + ";";
+    });
+
+    $.ajax({
+        url:'/share/{{herostr}}',
+        async:false,
+        dataType:'text',
+        type:'POST',
+        data:{
+            'cardsstr':param
+        },
+        success:function(resp){
+            console.log(resp);
+            if($("#share_img_loading").is(":visible")){
+                $("#share_img_loading").hide();
+                $("#share_img_img > a").attr("href", resp);
+                $("#share_img_img > a > img").attr("src", resp);
+                $("#share_img_img").show();
+            }
+        },
+        error:function(resp){
+            console.log(resp);
+        }
+    });
   }
 
   function initCards(cs){
