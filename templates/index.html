@@ -8,6 +8,7 @@
 
 	<script src="http://cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="http://cdn.staticfile.org/showdown/0.3.1/showdown.min.js"></script>
 	<style type="text/css">
 	.fqclass{
 		margin-top: -40px;
@@ -39,6 +40,9 @@
                 <li><a href="/db/weapon">武器</a></li>
                 <li><a href="/db/skill">技能</a></li>
                 <li><a href="/db/ally">随从</a></li>
+                <li class="nav-header">其他</li>
+                <li><a href="http://www.twitter.com/viperasi">viperasi&copy;2013</a></li>
+                <li><a href="http://www.hearthstone.com.cn/home">炉石传说</a></li>
 			</ul>
 		</div>
   		<div class="span10">
@@ -78,6 +82,9 @@
                         <li><a href="/db/weapon">武器</a></li>
                         <li><a href="/db/skill">技能</a></li>
                         <li><a href="/db/ally">随从</a></li>
+                        <li class="nav-header">其他</li>
+                        <li><a href="http://www.twitter.com/viperasi">viperasi&copy;2013</a></li>
+                        <li><a href="http://www.hearthstone.com.cn/home">炉石传说</a></li>
 					</ul>
 			      </div>
 			    </div>
@@ -90,6 +97,25 @@
               <input id="setinput" class="input-xxlarge" type="text" placeholder="输入完整配卡链接">
               <a href="#" id="setbtn" class="btn btn-primary" >查看</a>
             </div>
+            <div id="mdviewer">
+                <textarea id="mdsource" style="display:none;">
+炉石助手 hshelper
+========
+炉石传说中文配卡工具
+
+一个个人开发的炉石传说中文配卡工具，数据来源于[炉石传说数据库](http://db.h.163.com)。
+数据库完整度：
+
+1. 卡牌完整度：国服同步
+2. 数据完整度：75%
+
+目前完成功能：
+
+1. 配卡功能
+2. 卡牌数据库
+3. 图片分享、链接分享
+                </textarea>
+            </div>
   		</div>
 	</div>
 </div>
@@ -101,12 +127,23 @@
             if(host.indexOf("#")==host.length-1){
                 host = host.substring(0, host.length-1);
             }
-            console.log(host);
             if(url.indexOf(host) == 0){
                 location.href = url;
             }
         });
+
+        convertMarkdown();
     });
+
+    function convertMarkdown(){
+        var converter = new Showdown.converter();
+        console.log(converter);
+        var text = $("#mdsource").val();
+        console.log(text);
+        var html = converter.makeHtml(text);
+        console.log(html);
+        $("#mdviewer").append(html);
+    }
 </script>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- xu81.com_728*15 -->
