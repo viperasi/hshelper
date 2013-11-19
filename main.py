@@ -164,7 +164,6 @@ def set(cardstr=None):
 
 @app.route('/share/<string:cls>', methods=['POST'])
 def share(cls=None):
-    return QINIU_HOST + 'FpjWFB07cmjwUBiPNUibjvMiwZIH'
     if cls is not None:
         hero = Card.query.filter(Card.card_class == cls, Card.card_type == u'英雄', Card.card_rarity == u'免费', Card.card_set == u'基础').first()
         if request.form['cardsstr'] is not None:
