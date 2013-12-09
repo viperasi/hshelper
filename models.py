@@ -6,50 +6,236 @@ from datetime import datetime
 class Card(Base):
     __tablename__ = 'cards'
     id = Column(Integer, primary_key=True)
-    card_name = Column(Text)
-    card_engname = Column(Text)
-    card_type = Column(Text)
-    card_class = Column(Text)
-    card_rarity = Column(Text)
-    card_set = Column(Text)
-    card_race = Column(Text)
-    card_faction = Column(Text)
-    card_crafting = Column(Text)
-    card_gained = Column(Text)
-    card_artist = Column(Text)
-    card_collectible = Column(Text)
-    card_elite = Column(Text)
-    card_cost = Column(Text)
-    card_att = Column(Text)
-    card_hp = Column(Text)
-    card_img = Column(Text)
-    card_engimg = Column(Text)
-    card_desc = Column(Text)
-    card_engdesc = Column(Text)
-    card_remark = Column(Text)
-    card_engremark = Column(Text)
-    card_maxnum = Column(Integer)
-    card_num = Column(Integer)
+    cardid = Column(Text)
+    name = Column(Text)
+    set = Column(Text)
+    type = Column(Text)
+    faction = Column(Text)
+    cclass = Column(Text)
+    rarity = Column(Text)
+    cost = Column(Integer)
+    atk = Column(Integer)
+    health = Column(Integer)
+    textinhand = Column(Text)
+    collectible = Column(Integer)
+    artist = Column(Text)
+    howtogold = Column(Text)
+    flavortext = Column(Text)
+    taunt = Column(Integer)
+    elite = Column(Integer)
+    race = Column(Text)
+    combo = Column(Integer)
+    charge = Column(Integer)
+    enrage = Column(Integer)
+    auro = Column(Integer)
+    divineShield = Column(Integer)
+    deathrattle = Column(Integer)
+    battlecry = Column(Integer)
+    img = Column(Text)
 
-    def __init__(self, card_name=None,card_type=None,card_class=None,card_rarity=None,card_set=None,card_race=None,card_faction=None,card_crafting=None,card_gained=None,card_artist=None,card_collectible=None,card_elite=None,card_cost=None,card_att=None,card_hp=None,card_img=None,card_desc=None,card_remark=None):
-        self.card_name = card_name
-        self.card_type = card_type
-        self.card_class = card_class
-        self.card_rarity = card_rarity
-        self.card_set = card_set
-        self.card_race = card_race
-        self.card_faction = card_faction
-        self.card_crafting = card_crafting
-        self.card_gained = card_gained
-        self.card_artist = card_artist
-        self.card_collectible = card_collectible
-        self.card_elite = card_elite
-        self.card_cost = card_cost
-        self.card_att = card_att
-        self.card_hp = card_hp
-        self.card_img = card_img
-        self.card_desc = card_desc
-        self.card_remark = card_remark
+
+    def __init__(self, name=None,
+                        cardid=None,
+                        set=None,
+                        type=None,
+                        faction=None,
+                        cclass=None,
+                        rarity=None,
+                        cost=None,
+                        atk=None,
+                        health=None,
+                        textinhand=None,
+                        collectible=None,
+                        artist=None,
+                        howtogold=None,
+                        flavortext=None,
+                        taunt=None,
+                        elite=None,
+                        race=None,
+                        combo=None,
+                        charge=None,
+                        enrage=None,
+                        auro=None):
+        self.name = name
+        self.cardid = cardid
+        self.set = set
+        self.type = type
+        self.faction = faction
+        self.cclass = cclass
+        self.rarity = rarity
+        self.cost = cost
+        self.atk = atk
+        self.health = health
+        self.textinhand = textinhand
+        self.collectible = collectible
+        self.artist = artist
+        self.howtogold = howtogold
+        self.flavortext = flavortext
+        self.taunt = taunt
+        self.elite = elite
+        self.race = race
+        self.combo = combo
+        self.charge = charge
+        self.enrage = enrage
+        self.auro = auro
+
+class CardI18NName(Base):
+    __tablename__ = 'cards_i18n_name'
+    id = Column(Integer, primary_key=True)
+    cardId = Column(Integer)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, cardId=None,
+                        enUS=None,
+                        zhTW=None):
+        self.cardId = cardId
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardI18NTextinhand(Base):
+    __tablename__ = 'cards_i18n_textinhand'
+    id = Column(Integer, primary_key=True)
+    cardId = Column(Integer)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, cardId=None,
+                        enUS=None,
+                        zhTW=None):
+        self.cardId = cardId
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardI18NFlavorText(Base):
+    __tablename__ = 'cards_i18n_flavortext'
+    id = Column(Integer, primary_key=True)
+    cardId = Column(Integer)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, cardId=None,
+                        enUS=None,
+                        zhTW=None):
+        self.cardId = cardId
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardI18NHowtogold(Base):
+    __tablename__ = 'cards_i18n_howtogold'
+    id = Column(Integer, primary_key=True)
+    cardId = Column(Integer)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, cardId=None,
+                        enUS=None,
+                        zhTW=None):
+        self.cardId = cardId
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardSet(Base):
+    __tablename__ = 'card_set'
+    id = Column(Integer, primary_key=True)
+    setId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self,setId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.setId = setId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardType(Base):
+    __tablename__ = 'card_type'
+    id = Column(Integer, primary_key=True)
+    typeId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, typeId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.typeId = typeId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardClass(Base):
+    __tablename__ = 'card_class'
+    id = Column(Integer, primary_key=True)
+    classId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, classId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.classId = classId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardFaction(Base):
+    __tablename__ = 'card_faction'
+    id = Column(Integer, primary_key=True)
+    factionId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, factionId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.factionId = factionId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardRace(Base):
+    __tablename__ = 'card_race'
+    id = Column(Integer, primary_key=True)
+    raceId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, raceId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.raceId = raceId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
+
+class CardRarity(Base):
+    __tablename__ = 'card_rarity'
+    id = Column(Integer, primary_key=True)
+    rarityId = Column(Integer)
+    name = Column(Text)
+    enUS = Column(Text)
+    zhTW = Column(Text)
+
+    def __init__(self, rarityId=None,
+                        name=None,
+                        enUS=None,
+                        zhTW=None):
+        self.rarityId = rarityId
+        self.name = name
+        self.enUS = enUS
+        self.zhTW = zhTW
 
 class Share(Base):
     __tablename__ = 'shares'

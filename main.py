@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, session, render_template, request, redirect, url_for, abort
 from db import db_session
-from models import Card
+from models import Card, CardFaction, CardRarity, CardRace, CardClass, CardRarity, CardType, CardSet
 from picutil import saveImage
 from sqlalchemy import func
 import simplejson
@@ -76,9 +76,7 @@ def mgrSave(id=None):
         card = Card.query.filter(Card.id == id).first()
         if card is not None:
             if request.form['name'] is not None and request.form['name'] != 'None':
-                card.card_name = request.form['name']
-            if request.form['engname'] is not None and request.form['engname'] != 'None':
-                card.card_engname = request.form['engname']
+                card.name = request.form['name']
             if request.form['type'] is not None and request.form['type'] != 'None':
                 card.card_type = request.form['type']
             if request.form['rarity'] is not None and request.form['rarity'] != 'None':
@@ -143,20 +141,21 @@ def set(cardstr=None):
         cards = None
         cs = ''
         if herostr is not None:
-            classcards = Card.query.filter(Card.card_class == herostr, Card.card_type != u'英雄', Card.card_type != u'英雄技能')
-            allycards = Card.query.filter(Card.card_type == u'随从')
+            cardClass = CardClass.query.filter(CardClass.name==herostr).first()
+            classcards = Card.query.filter(Card.cclass==str(cardClass.classId), Card.collectible==1, Card.type!=3).order_by(Card.cost)
+            allycards = Card.query.filter(Card.type==4, Card.collectible==1, Card.cclass==None).order_by(Card.cost)
         if cardsstr is not None:
             cardsNumArr = cardsstr.split(';')
             cardIds = []
             for cardNumStr in cardsNumArr:
                 if cardNumStr is not None and cardNumStr != '':
                     cardIds.append(cardNumStr.split(':')[0])
-            cards = Card.query.filter(Card.id.in_(cardIds)).all()
+            cards = Card.query.filter(Card.cardid.in_(cardIds)).all()
             for c in cards:
                 for cardNumStr in cardsNumArr:
                     cns = cardNumStr.split(':')
-                    if cns[0] is not None and cns[0] != '' and c.id == int(cns[0]):
-                        cs = cs + str(c.id) + ':' + c.card_name + ':' + cns[1] + ';'
+                    if cns[0] is not None and cns[0] != '' and c.cardid == cns[0]:
+                        cs = cs + c.cardid + ':' + c.name + ':' + cns[1] + ';'
                     else:
                         continue
         return render_template('set.html', classcards=classcards, allycards=allycards, herostr=herostr, cards=cards, cs=cs)

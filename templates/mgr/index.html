@@ -61,20 +61,24 @@
 			</div>
 			<table class="table table-striped">
 				<tr>
+                    <th>图片</th>
 					<th>名称</th>
 					<th>类型</th>
 					<th>职业</th>
 					<th>稀有度</th>
 					<th>牌组</th>
+                    <th>三围</th>
 					<th>操作</th>
 				</tr>
 				{% for card in cards %}
 				<tr>
+                    <td><img src="{{ card.card_img}}" style="widht:80px;height:100px;"/></td>
 					<td><a href="#" class="cardmodal" id="{{card.id}}">{{ card.card_name }}</a></td>
 					<td>{{ card.card_type }}</td>
 					<td>{{ card.card_class }}</td>
 					<td>{{ card.card_rarity }}</td>
 					<td>{{ card.card_set }}</td>
+                    <td>{{ card.card_cost}}:{{card.card_att}}:{{card.card_hp}}</td>
 					<td><a href="/mgr/edit/{{card.id}}" class="editmodal" >修改</a></td>
 				</tr>
 				{% endfor %}

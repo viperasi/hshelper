@@ -106,15 +106,15 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="class">
                         {% for classcard in classcards %}
-                        <a href="#" style="display:inline-block;" data-id="{{classcard.id}}" data-name="{{classcard.card_name}}" data-img="{{classcard.card_img}}" class="card">
-                            <pre style="width:180px;">{{classcard.card_name}}<span class='badge badge-info pull-right' id="count_{{classcard.id}}"></span></pre>
+                        <a href="javascript:;" style="display:inline-block;" data-id="{{classcard.cardid}}" data-name="{{classcard.name}}" data-img="{{classcard.img}}" data-elite="{{classcard.elite}}" class="card">
+                            <pre style="width:180px;">{{classcard.name}}<span class='badge badge-info pull-right' id="count_{{classcard.cardid}}"></span></pre>
                         </a>
                         {% endfor %}
                     </div>
                     <div class="tab-pane" id="ally">
                         {% for allycard in allycards %}
-                          <a href="#" style="display:inline-block;" data-id="{{allycard.id}}" data-name="{{allycard.card_name}}" data-img="{{allycard.card_img}}" class="card">
-                            <pre style="width:180px;">{{allycard.card_name}}<span class='badge badge-info pull-right' id="count_{{allycard.id}}"></span></pre>
+                          <a href="javascript:;" style="display:inline-block;" data-elite="{{allycard.elite}}" data-id="{{allycard.cardid}}" data-name="{{allycard.name}}" data-img="{{allycard.card_img}}" class="card">
+                            <pre style="width:180px;">{{allycard.name}}<span class='badge badge-info pull-right' id="count_{{allycard.cardid}}"></span></pre>
                           </a>
                         {% endfor %}
                     </div>
@@ -166,17 +166,20 @@
         if(e.which==3){
             minusCard($(this).data('id'));
         }else{
-            addCard($(this).data('id'), $(this).data('img'), $(this).data('name'));
+            addCard($(this).data('id'), $(this).data('img'), $(this).data('name'), $(this).data('elite'));
         }
     });
 
     $('#sharelink').click(function(){
         $('#sharelink').select();
+        return false;
     });
 
     $('a[href="#share_img"]').on('shown', function (e) {
         shareImg();
+        return false;
     });
+
   });
 
   function minusCard(id){
@@ -200,7 +203,7 @@
         }
   }
 
-  function addCard(id, img, name){
+  function addCard(id, img, name, elite){
         var el = $("#cardlist").find("pre[id='"+id+"']");
         var allcount = $("#allcount").text();
         if(allcount==30){
@@ -208,7 +211,11 @@
         }else{
             if(el.length>0){
                 var count = $(el[0]).find("span").text();
-                if(count<2){
+                var max = 2;
+                if(elite == 1){
+                    max = 1;
+                }
+                if(count<max){
                     $(el[0]).find("span").text(2);
                     $("#allcount").text(parseInt(allcount) + 1);
                     $("#count_"+id).text(2);
@@ -217,6 +224,7 @@
                 var $pre = $("<pre class='cl' data-img='"+img+"' id='"+id+"'>"+name+"<span class='badge badge-warning pull-right'>1</span></pre>");
                 $pre.click(function(){
                     minusCard(id);
+                    return false;
                 });
                 $("#cardlist").append(
                     $pre
@@ -293,6 +301,7 @@
                 var $pre = $("<pre id='"+csss[0]+"'>"+csss[1]+"<span class='badge badge-warning pull-right'>"+csss[2]+"</span></pre>");
                 $pre.click(function(){
                     minusCard(csss[0]);
+                    return false;
                 });
                 $("#cardlist").append(
                     $pre
