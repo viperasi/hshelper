@@ -22,6 +22,7 @@
 			<ul class="nav nav-list">
 			    <li class="nav-header">炉石助手</li>
                 <li><a href="/">首页</a></li>
+                <li><a href="/cheat">记牌器</a></li>
 				<li class="nav-header">卡牌构筑</li>
                 <li><a href="/set/圣骑士">圣骑士</a></li>
                 <li><a href="/set/德鲁伊">德鲁伊</a></li>
@@ -31,7 +32,7 @@
                 <li><a href="/set/潜行者">潜行者</a></li>
                 <li><a href="/set/牧师">牧师</a></li>
                 <li><a href="/set/猎人">猎人</a></li>
-                <li><a href="/set/萨满">萨满</a></li>
+                <li><a href="/set/萨满祭司">萨满祭司</a></li>
                 <li class="nav-header">数据库</li>
                 <li><a href="/db">查看所有</a></li>
                 <li><a href="/db/hero">英雄</a></li>
@@ -64,6 +65,7 @@
 			      <div class="nav-collapse collapse">
 			        <ul class="nav nav-list">
 				        <li><a href="/">首页</a></li>
+                        <li><a href="/cheat">记牌器</a></li>
 				        <li class="nav-header">卡牌构筑</li>
                         <li><a href="/set/圣骑士">圣骑士</a></li>
                         <li><a href="/set/德鲁伊">德鲁伊</a></li>
@@ -73,7 +75,7 @@
                         <li><a href="/set/潜行者">潜行者</a></li>
                         <li><a href="/set/牧师">牧师</a></li>
                         <li><a href="/set/猎人">猎人</a></li>
-                        <li><a href="/set/萨满">萨满</a></li>
+                        <li><a href="/set/萨满祭司">萨满祭司</a></li>
                         <li class="nav-header">数据库</li>
                         <li><a href="/db">查看所有</a></li>
                         <li><a href="/db/hero">英雄</a></li>
@@ -100,7 +102,7 @@
 				</tr>
 				{% for card in cards %}
 				<tr>
-					<td><a href="#" class="cardmodal" id="{{card.id}}">{{ card.card_name }}</a></td>
+					<td><a href="#" class="cardmodal" id="{{card.id}}">{{ card.name }}</a></td>
 					<td>
                         {% if card.card_type %}
                         {{ card.card_type }}
@@ -197,16 +199,16 @@ $(function(){
 			type:'GET',
 			success:function(resp){
 				console.log(resp.card_remark);
-				$("#cardLabel").empty().append(resp.card_name);
-				$("#cardName").empty().append(resp.card_name);
-				$("#cardImg").attr("src", resp.card_img);
-				$("#cardType").empty().append(resp.card_type);
-				$("#cardRarity").empty().append(resp.card_rarity);
-				$("#cardSet").empty().append(resp.card_set);
-				$("#cardClass").empty().append(resp.card_class);
-				$("#cardRace").empty().append(resp.card_race);
-				$("#cardDesc").empty().append(resp.card_desc);
-				$("#cardRemark").empty().append(resp.card_remark);
+				$("#cardLabel").empty().append(resp.name);
+				$("#cardName").empty().append(resp.name);
+				$("#cardImg").attr("src", resp.img);
+				$("#cardType").empty().append(resp.type);
+				$("#cardRarity").empty().append(resp.rarity);
+				$("#cardSet").empty().append(resp.set);
+				$("#cardClass").empty().append(resp.class);
+				$("#cardRace").empty().append(resp.race);
+				$("#cardDesc").empty().append(resp.textinhand);
+				$("#cardRemark").empty().append(resp.flavortext);
                 $("#cardModal").modal();
                 $("#loading").modal("hide");
 			}

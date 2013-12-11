@@ -5,7 +5,7 @@ import uuid
 from PIL import Image, ImageDraw, ImageFont
 from QiniuUtil import uploadQiniu
 
-from models import Card, Share
+from models import Card, Share, CardClass
 from db import db_session
 
 #保存图片
@@ -26,10 +26,11 @@ def drawData(hero, cards):
 
     draw.rectangle(((10, 1), (width - 10, 40)), fill=(223, 223, 223))
 
+    cc = CardClass.query.filter(CardClass.classId==hero.cclass).first()
     font = ImageFont.truetype('/Library/Fonts/Songti.ttc', 14)
     fontcolor = (14, 77, 157)
-    draw.text((20, 10), hero.card_name, fill=fontcolor, font=font)
-    draw.text((140, 10), hero.card_class, fill=fontcolor, font=font)
+    draw.text((20, 10), hero.name, fill=fontcolor, font=font)
+    draw.text((140, 10), cc.name, fill=fontcolor, font=font)
 
     draw.text((20, 45), "name", fill=fontcolor, font=font)
     draw.text((220, 45), "cost", fill=fontcolor, font=font)
@@ -38,11 +39,24 @@ def drawData(hero, cards):
     font = ImageFont.truetype('/Library/Fonts/Songti.ttc', 12)
     fontcolor = (50, 100, 100)
     for index, card in enumerate(cards):
+        atk = ''
+        health = ''
+        if card.atk is not None:
+            atk = str(card.atk)
+        if card.health is not None:
+            health = str(card.health)
         height = 30 * (index + 2) + 15
-        draw.text((20, height), card.card_name + "*" + str(card.card_num), fill=fontcolor, font=font)
-        draw.text((220, height), card.card_cost, fill=fontcolor, font=font)
-        draw.text((280, height), card.card_att, fill=fontcolor, font=font)
-        draw.text((340, height), card.card_hp, fill=fontcolor, font=font)
+        fontcolor = (50, 100, 100)
+        if card.rarity == '3':
+            fontcolor = (0, 112, 221)
+        elif card.rarity == '4':
+            fontcolor = (163, 53, 238)
+        elif card.rarity == '5':
+            fontcolor = (255, 104, 16)
+        draw.text((20, height), card.name + "*" + str(card.card_num), fill=fontcolor, font=font)
+        draw.text((220, height), str(card.cost), fill=fontcolor, font=font)
+        draw.text((280, height), atk, fill=fontcolor, font=font)
+        draw.text((340, height), health, fill=fontcolor, font=font)
     imgname = 'tmp/' + str(uuid.uuid4()) + '.png'
     im.save(imgname)
     return imgname
@@ -68,9 +82,9 @@ def test():
     cards = Card.query.order_by(Card.id)[0: 10]
     for card in cards:
         card.card_num = 1
-        card.card_cost = '2'
-        card.card_att = '2'
-        card.card_hp = '5'
+        card.cost = '2'
+        card.atk = '2'
+        card.health = '5'
     drawData(cards[0], cards)
 
 if __name__ == '__main__':

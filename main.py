@@ -142,7 +142,7 @@ def set(cardstr=None):
         cs = ''
         if herostr is not None:
             cardClass = CardClass.query.filter(CardClass.name==herostr).first()
-            classcards = Card.query.filter(Card.cclass==str(cardClass.classId), Card.collectible==1, Card.type!=3).order_by(Card.cost)
+            classcards = Card.query.filter(Card.cclass==str(cardClass.classId), Card.collectible==1, Card.type!=3).order_by(Card.cost, Card.atk, Card.health)
             allycards = Card.query.filter(Card.type==4, Card.collectible==1, Card.cclass==None).order_by(Card.cost)
         if cardsstr is not None:
             cardsNumArr = cardsstr.split(';')
@@ -164,7 +164,8 @@ def set(cardstr=None):
 @app.route('/share/<string:cls>', methods=['POST'])
 def share(cls=None):
     if cls is not None:
-        hero = Card.query.filter(Card.card_class == cls, Card.card_type == u'英雄', Card.card_rarity == u'免费', Card.card_set == u'基础').first()
+        cardClass = CardClass.query.filter(CardClass.name==cls).first()
+        hero = Card.query.filter(Card.cclass == cardClass.classId, Card.type == 3, Card.rarity == 2, Card.set == 2).first()
         if request.form['cardsstr'] is not None:
             cardsstr = request.form['cardsstr']
             cardsNumArr = cardsstr.split(';')
@@ -172,11 +173,11 @@ def share(cls=None):
             for cardNumStr in cardsNumArr:
                 if cardNumStr is not None and cardNumStr != '':
                     cardIds.append(cardNumStr.split(':')[0])
-            cards = Card.query.filter(Card.id.in_(cardIds)).all()
+            cards = Card.query.filter(Card.cardid.in_(cardIds)).order_by(Card.cost, Card.atk, Card.health).all()
             for c in cards:
                 for cardNumStr in cardsNumArr:
                     cns = cardNumStr.split(':')
-                    if cns[0] is not None and cns[0] != '' and c.id == int(cns[0]):
+                    if cns[0] is not None and cns[0] != '' and c.cardid == cns[0]:
                         c.card_num = cns[1]
                     else:
                         continue
@@ -197,35 +198,35 @@ def db(page=1):
 @app.route('/db/hero/<int:page>')
 def dbHero(page=1):
     route = 'hero'
-    result = getCards(page, u'英雄')
+    result = getCards(page, 3)
     return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 
 @app.route('/db/hskill')
 @app.route('/db/hskill/<int:page>')
 def dbHeroSkill(page=1):
     route = 'hskill'
-    result = getCards(page, u'英雄技能')
+    result = getCards(page, 10)
     return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 
 @app.route('/db/weapon')
 @app.route('/db/weapon/<int:page>')
 def dbWeapon(page=1):
     route = 'weapon'
-    result = getCards(page, u'武器')
+    result = getCards(page, 7)
     return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 
 @app.route('/db/skill')
 @app.route('/db/skill/<int:page>')
 def dbSkill(page=1):
     route = 'skill'
-    result = getCards(page, u'技能')
+    result = getCards(page, 5)
     return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 
 @app.route('/db/ally')
 @app.route('/db/ally/<int:page>')
 def dbAlly(page=1):
     route = 'ally'
-    result = getCards(page, u'随从')
+    result = getCards(page, 4)
     return render_template('db.html', cards=result['cards'], allPage=result['allPage'], page=result['page'], route=route)
 #index end
 
@@ -246,7 +247,7 @@ def getCards(page=1, type=None):
     if type is None:
         count = db_session.query(func.count(Card.id)).first()[0]
     else:
-        count = db_session.query(func.count(Card.id)).filter(Card.card_type == type).first()[0]
+        count = db_session.query(func.count(Card.id)).filter(Card.type == type).first()[0]
     curr = (page - 1) * PER_PAGE
     allPage = 1
     if count % PER_PAGE == 0 :
@@ -261,9 +262,13 @@ def getCards(page=1, type=None):
         page = 1
     cards = None
     if type is None:
-        cards = Card.query.order_by(Card.id)[curr : curr + PER_PAGE]
+        cards = Card.query.order_by(Card.cost, Card.atk, Card.health)[curr : curr + PER_PAGE]
     else:
-        cards = Card.query.filter(Card.card_type == type).order_by(Card.id)[curr : curr + PER_PAGE]
+        cards = Card.query.filter(Card.type == type).\
+                    join(CardType, CardType.typeId==Card.type).\
+                    join(CardClass, CardClass.classId == Card.cclass).\
+                    join(CardRarity, CardRarity.rarityId == Card.rarity).\
+                    order_by(Card.cost, Card.atk, Card.health)[curr : curr + PER_PAGE]
     result['cards'] = cards
     result['allPage'] = allPage
     result['page'] = page

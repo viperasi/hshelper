@@ -10,6 +10,7 @@
 	<script src="http://cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
 	<script src="http://cdn.staticfile.org/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
     <script src="{{url_for('static', filename='opentip-jquery.min.js')}}"></script>
+    <script src="http://cdn.staticfile.org/jquery.devbridge-autocomplete/1.2.7/jquery.devbridge-autocomplete.min.js"></script>
 	<style type="text/css">
 	.fqclass{
 		margin-top: -40px;
@@ -24,6 +25,7 @@
 			<ul class="nav nav-list">
 			    <li class="nav-header">炉石助手</li>
                 <li><a href="/">首页</a></li>
+                <li><a href="/cheat">记牌器</a></li>
 				<li class="nav-header">卡牌构筑</li>
                 <li><a href="/set/圣骑士">圣骑士</a></li>
                 <li><a href="/set/德鲁伊">德鲁伊</a></li>
@@ -33,7 +35,7 @@
                 <li><a href="/set/潜行者">潜行者</a></li>
                 <li><a href="/set/牧师">牧师</a></li>
                 <li><a href="/set/猎人">猎人</a></li>
-                <li><a href="/set/萨满">萨满</a></li>
+                <li><a href="/set/萨满祭司">萨满祭司</a></li>
                 <li class="nav-header">数据库</li>
                 <li><a href="/db">查看所有</a></li>
                 <li><a href="/db/hero">英雄</a></li>
@@ -66,6 +68,7 @@
 			      <div class="nav-collapse collapse">
 			        <ul class="nav nav-list">
                         <li><a href="/">首页</a></li>
+                        <li><a href="/cheat">记牌器</a></li>
 				        <li class="nav-header">卡牌构筑</li>
                         <li><a href="/set/圣骑士">圣骑士</a></li>
                         <li><a href="/set/德鲁伊">德鲁伊</a></li>
@@ -75,7 +78,7 @@
                         <li><a href="/set/潜行者">潜行者</a></li>
                         <li><a href="/set/牧师">牧师</a></li>
                         <li><a href="/set/猎人">猎人</a></li>
-                        <li><a href="/set/萨满">萨满</a></li>
+                        <li><a href="/set/萨满祭司">萨满祭司</a></li>
                         <li class="nav-header">数据库</li>
                         <li><a href="/db">查看所有</a></li>
                         <li><a href="/db/hero">英雄</a></li>
@@ -92,6 +95,9 @@
 			  </div>
 			</div>
             <div class="span8">
+                <div class="input-append">
+                  <input id="setinput" class="input-xxlarge" type="text" placeholder="输入卡牌中文名称、三围（如3-3-3）进行快速搜索">
+                </div>
                 <div class="alert alert-error hide">
                   <button type="button" class="close" data-dismiss="alert">&times;</button>
                   <strong>错误!</strong> 请添加够30张卡牌再分享。
@@ -106,14 +112,14 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="class">
                         {% for classcard in classcards %}
-                        <a href="javascript:;" style="display:inline-block;" data-id="{{classcard.cardid}}" data-name="{{classcard.name}}" data-img="{{classcard.img}}" data-elite="{{classcard.elite}}" class="card">
+                        <a href="javascript:void(0);" style="display:inline-block;" data-id="{{classcard.cardid}}" data-name="{{classcard.name}}" data-img="{{classcard.img}}" data-elite="{{classcard.elite}}" data-cost="{{classcard.cost}}" class="card">
                             <pre style="width:180px;">{{classcard.name}}<span class='badge badge-info pull-right' id="count_{{classcard.cardid}}"></span></pre>
                         </a>
                         {% endfor %}
                     </div>
                     <div class="tab-pane" id="ally">
                         {% for allycard in allycards %}
-                          <a href="javascript:;" style="display:inline-block;" data-elite="{{allycard.elite}}" data-id="{{allycard.cardid}}" data-name="{{allycard.name}}" data-img="{{allycard.card_img}}" class="card">
+                          <a href="javascript:;" style="display:inline-block;" data-elite="{{allycard.elite}}" data-id="{{allycard.cardid}}" data-name="{{allycard.name}}" data-img="{{allycard.card_img}}" data-cost="{{allycard.cost}}" class="card">
                             <pre style="width:180px;">{{allycard.name}}<span class='badge badge-info pull-right' id="count_{{allycard.cardid}}"></span></pre>
                           </a>
                         {% endfor %}
@@ -158,9 +164,11 @@
     $(document).bind('contextmenu', function(e){ return false; });
     initCards('{{cs}}');
 
+/*
     $(".card").each(function(){
         $(this).opentip("<img src='"+$(this).data('img')+"'/>", {style:'glass'});
     });
+*/
 
     $(".card").mousedown(function(e){
         if(e.which==3){
@@ -168,6 +176,7 @@
         }else{
             addCard($(this).data('id'), $(this).data('img'), $(this).data('name'), $(this).data('elite'));
         }
+        return false;
     });
 
     $('#sharelink').click(function(){
