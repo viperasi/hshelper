@@ -8,7 +8,7 @@ from StringIO import StringIO
 
 #qiniu sdk config
 qiniu.conf.ACCESS_KEY = ""
-qiniu.conf.SECRET_KEY = "wzs2kLyh7R4ipGmWZH-"
+qiniu.conf.SECRET_KEY = ""
 
 bucket_name = "hshelper"
 
